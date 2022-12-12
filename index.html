@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link href="https://fonts.cdnfonts.com/css/gotham" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+
+        <title>Sample Library 2021</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="tracks">
+                <div class="player-cover-section">
+                    <!-- Player -->
+                    <div class="player">
+                        <div class="player-header">
+                            <h1>Player</h1>
+                        </div>
+                        <!-- Track details -->
+                        <div class="details">
+                            <div class="track-details">
+                                <div class="track-image"></div>
+                                <div class="track-names">Artist+song</div>
+                                <div class="track-year">Year</div>
+                            </div>
+                            <!-- Display track buttons -->
+                            <div class="Samples">
+                                <h2>Samples</h2>
+                                <div class="sample-names-1">Sample names 1</div>
+                                <div class="sample-names-1">Sample names 1</div>
+                            </div>
+                            <div class="player-buttons">
+                                <div class="prev-track" onclick="prevTrack()">
+                                    <i class="fa fa-step-backward fa-2x"></i>
+                                </div>
+                                <div class="playpause-track" onclick="playpauseTrack()">
+                                    <i class="fa fa-play-circle fa-5x"></i>
+                                </div>
+                                <div class="next-track" onclick="nextTrack()">
+                                    <i class="fa fa-step-forward fa-2x"></i>
+                                </div>
+                              </div>
+                            <!-- Display seek slider -->
+                            <div class="slider_container">
+                                <div class="current-time">00:00</div>
+                                    <input type="range" min="1" max="100" value="0" class="seek_slider" onchange="seekTo()">
+                                <div class="total-duration">00:00</div>
+                              </div>
+                          </div>
+                    </div>
+                    <!-- Covers -->
+                    <div class="cover">
+                        <div class="cover-header">
+                            <h1>Cover</h1>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="songlist-filters-section">
+                    <div class="songlist-header">
+                        <h2>BILLBOARD PLAYLIST</h2>
+                        <h3>Year-End Chart 2021: Hot 100 (Sampled)</h3>
+                    </div>
+                    <div class="songlist">
+
+                    </div>
+                    <div class="filter">
+                        <div class="filter-header">
+                            <h1>Filters</h1>
+                        </div>
+                        <div class="filter-buttons">
+                            <div class="filter-child">
+                                <h2 style="padding-bottom: 20px; padding-left: 5px">GENRE</h2>
+                                <button data-filter="*" class="genre">All</button>
+                                <button data-filter="Pop/rock" class="genre">Pop/Rock</button>
+                                <button data-filter="Hip-Hop/R&B" class="genre">Hip-Hop/R&B</button>
+                                <button data-filter="Soul/Disco" class="genre">Soul/Disco</button>
+                                <button data-filter="Soundtrack" class="genre">Soundtrack</button>
+                                <button data-filter="World/Latin" class="genre">World/Latin</button>
+                            </div>
+                            <div class="filter-child">
+                                <h2 style="padding-bottom: 20px; padding-left: 5px">YEAR</h2>
+                                <button data-filter="*" class="year">All</button>
+                                <button data-filter="1970s" class="year">1970s</button>
+                                <button data-filter="1980s" class="year">1980s</button>
+                                <button data-filter="1990s" class="year">1990s</button>
+                                <button data-filter="2000s" class="year">2000s</button>
+                                <button data-filter="2010s" class="year">2010s</button>
+                                <button data-filter="2020s" class="year">2020s</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="script.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+        <script>
+            fetch('sampled-songs.json') 
+		    //Check for a response 
+	        .then(function(response) {
+	          return response.json();
+	        })
+	        // Get the data from the JSON file.
+	        .then(function(data) {
+			    for (let i = 0; i < data.tracks.length; i++) {
+                    console.log("TRACK[" + i + "]: " + JSON.stringify(data.tracks[i]));
+                    if (data.tracks[i].sample) {
+                        $(".songlist").append(
+						    '<div class="track-content">'+
+							    '<h4>'+ data.tracks[i].artistname + " - " + data.tracks[i].songname + '</h4>'+
+					    '</div>'
+				    )
+                    } else {
+                        $(".songlist").append(
+						    // '<a href="'+ data.tracks[i].spotifyurl +'" target=_blank>'+ // external link to spotify, dont need this 
+						    // '<img src="'+ data.tracks[i].image[0].url +'">'+
+						    '<div class="track-content">'+
+							    '<h5>'+ data.tracks[i].artistname + " - " + data.tracks[i].songname + '</h5>' +
+							    // '<p>'+ data.tracks[i].songname +'</p>'+
+						    '</div>'+
+						    '</a>'+
+					    '</div>'
+				    )
+                    }
+				    
+			    }
+	        })
+	        //Catch errors
+	        .catch(function(error) {
+	        $('h1').html('Error with reciev/set of data')
+	        console.log(error);
+	        })
+
+            let now_playing = document.querySelector(".now-playing");
+            let track_art = document.querySelector(".track-image");
+            let track_name = document.querySelector(".track-names");
+            
+            let playpause_btn = document.querySelector(".playpause-track");
+            let next_btn = document.querySelector(".next-track");
+            let prev_btn = document.querySelector(".prev-track");
+            
+            let seek_slider = document.querySelector(".seek_slider");
+            let curr_time = document.querySelector(".current-time");
+            let total_duration = document.querySelector(".total-duration");
+            
+            // Specify globally used values
+            let track_index = 0;
+            let isPlaying = false;
+            let updateTimer;
+            
+            // Create the audio element for the player
+            let curr_track = document.createElement('audio');
+            
+            // Define the list of tracks that have to be played
+            let track_list = data.tracks
+
+            function loadTrack(track_index) {
+            // Clear the previous seek timer
+            clearInterval(updateTimer);
+            resetValues();
+            
+            // Load a new track
+            curr_track.src = track_list[track_index].path;
+            curr_track.load();
+            
+            // Update details of the track
+            track_image.style.backgroundImage =
+                "url(" + track_list[track_index].image + ")";
+            track_name.textContent = track_list[track_index].artistname + track_list[track_index].songname;
+            
+            // Set an interval of 1000 milliseconds
+            // for updating the seek slider
+            updateTimer = setInterval(seekUpdate, 1000);
+            
+            // Move to the next track if the current finishes playing
+            // using the 'ended' event
+            curr_track.addEventListener("ended", nextTrack);
+            }
+            
+            // Function to reset all values to their default
+            function resetValues() {
+            curr_time.textContent = "00:00";
+            total_duration.textContent = "00:00";
+            seek_slider.value = 0;
+            }
+
+            function playpauseTrack() {
+            // Switch between playing and pausing
+            // depending on the current state
+            if (!isPlaying) playTrack();
+            else pauseTrack();
+            }
+            
+            function playTrack() {
+            // Play the loaded track
+            curr_track.play();
+            isPlaying = true;
+            
+            // Replace icon with the pause icon
+            playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-5x"></i>';
+            }
+            
+            function pauseTrack() {
+            // Pause the loaded track
+            curr_track.pause();
+            isPlaying = false;
+            
+            // Replace icon with the play icon
+            playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-5x"></i>';
+            }
+            
+            function nextTrack() {
+            // Go back to the first track if the
+            // current one is the last in the track list
+            if (track_index < track_list.length - 1)
+                track_index += 1;
+            else track_index = 0;
+            
+            // Load and play the new track
+            loadTrack(track_index);
+            playTrack();
+            }
+            
+            function prevTrack() {
+            // Go back to the last track if the
+            // current one is the first in the track list
+            if (track_index > 0)
+                track_index -= 1;
+            else track_index = track_list.length - 1;
+            
+            // Load and play the new track
+            loadTrack(track_index);
+            playTrack();
+            }
+
+            function seekTo() {
+            // Calculate the seek position by the
+            // percentage of the seek slider
+            // and get the relative duration to the track
+            seekto = curr_track.duration * (seek_slider.value / 100);
+            
+            // Set the current track position to the calculated seek position
+            curr_track.currentTime = seekto;
+            }
+
+            function seekUpdate() {
+            let seekPosition = 0;
+            
+            // Check if the current track duration is a legible number
+            if (!isNaN(curr_track.duration)) {
+                seekPosition = curr_track.currentTime * (100 / curr_track.duration);
+                seek_slider.value = seekPosition;
+            
+                // Calculate the time left and the total duration
+                let currentMinutes = Math.floor(curr_track.currentTime / 60);
+                let currentSeconds = Math.floor(curr_track.currentTime - currentMinutes * 60);
+                let durationMinutes = Math.floor(curr_track.duration / 60);
+                let durationSeconds = Math.floor(curr_track.duration - durationMinutes * 60);
+            
+                // Add a zero to the single digit time values
+                if (currentSeconds < 10) { currentSeconds = "0" + currentSeconds; }
+                if (durationSeconds < 10) { durationSeconds = "0" + durationSeconds; }
+                if (currentMinutes < 10) { currentMinutes = "0" + currentMinutes; }
+                if (durationMinutes < 10) { durationMinutes = "0" + durationMinutes; }
+            
+                // Display the updated duration
+                curr_time.textContent = currentMinutes + ":" + currentSeconds;
+                total_duration.textContent = durationMinutes + ":" + durationSeconds;
+            }
+            }
+
+            // Load the first track in the tracklist
+            oadTrack(track_index);
+        </script>
+    </body>
+</html>
